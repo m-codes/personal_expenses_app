@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+//Serves as model for the transaction data 
+
 class Transaction {
   final String id;
   final String title;
