@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:personal_expenses_app/transaction.dart';
+import 'package:intl/intl.dart';
 
 import './transaction.dart';
 
@@ -39,7 +39,7 @@ class HomePage extends StatelessWidget {
         title: Text('Personal Expenses'),
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           //Wrapped Card widget in container in order to change size
@@ -58,7 +58,44 @@ class HomePage extends StatelessWidget {
             //map takes a function, that gets executed on everything in transactions list
             children: transactions.map((tran) {
               return Card(
-                child: Text(tran.title),
+                child: Row(
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.symmetric(
+                        vertical: 10,
+                        horizontal: 14,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.purple,
+                          width: 2,
+                        ),
+                      ),
+                      padding: EdgeInsets.all(10),
+                      child: Text(
+                        '€${tran.amount}',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        fontSize: 20, color: Colors.purple),
+                      ),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          tran.title,
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                        Text(
+                          //DateFormat made available by the intl package
+                          //can enter personalised date format also, e.g. DateFormat('yyyy-MM-dd')
+                          DateFormat.yMMMd().format(tran.date),
+                          style: TextStyle(color: Colors.grey),
+                        )
+                      ],
+                    )
+                  ],
+                ),
               );
             }).toList(),
           ),
