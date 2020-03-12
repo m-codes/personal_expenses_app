@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import './chart_bar.dart';
 import '../models/transaction.dart';
 
 class Chart extends StatelessWidget {
@@ -12,7 +13,9 @@ class Chart extends StatelessWidget {
     //generate is a utility constructor on the list class
     return List.generate(7, (index) {
       //Keep subtracting a day from current date in order to get previous week
-      final weekDay = DateTime.now().subtract(Duration(days: index),);
+      final weekDay = DateTime.now().subtract(
+        Duration(days: index),
+      );
       var totalSum = 0.0;
 
       //Loop to get the total transaction amount for a particular day
@@ -25,10 +28,19 @@ class Chart extends StatelessWidget {
       }
       //Returning a map that conatins the day and amount
       return {
-        //Dateformat from intl package. DateFormat.E gives the first letter of the weekday
-        'day': DateFormat.E().format(weekDay),
+        //Dateformat from intl package. DateFormat.E gives the day abbreviated (e.g. Tue)
+        'day': DateFormat.E().format(weekDay).substring(0, 1),
         'amount': totalSum,
       };
+    });
+  }
+
+  double get totalSpending {
+    //fold lets you change a list to another type
+    //Pass it a starting value and then return a new value in the function, which will be added to starting value
+    //sum == currently calculated sum, which is param one (0.0). item == element being looked at
+    return groupedTransacationValues.fold(0.0, (sum, item) {
+      return sum + item['amount'];
     });
   }
 
@@ -37,7 +49,28 @@ class Chart extends StatelessWidget {
     return Card(
       elevation: 6,
       margin: EdgeInsets.all(20),
-      child: Row(children: <Widget>[]),
+      child: Container(
+        padding: EdgeInsets.all(10),
+        child: Row(
+          mainAxisAlignment:  MainAxisAlignment.spaceAround,
+          //Create a map of widgets based on the generated list
+          children: groupedTransacationValues.map(
+            (data) {
+              //Flexible used to stop large lable of a bar effecting the whole row
+              return Flexible(
+                fit: FlexFit.tight,
+                            child: ChartBar(
+                  data['day'],
+                  data['amount'],
+                  totalSpending == 0.0
+                      ? 0.0
+                      : (data['amount'] as double) / totalSpending,
+                ),
+              );
+            },
+          ).toList(),
+        ),
+      ),
     );
   }
 }
