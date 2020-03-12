@@ -11,28 +11,32 @@ class Chart extends StatelessWidget {
 
   List<Map<String, Object>> get groupedTransacationValues {
     //generate is a utility constructor on the list class
-    return List.generate(7, (index) {
-      //Keep subtracting a day from current date in order to get previous week
-      final weekDay = DateTime.now().subtract(
-        Duration(days: index),
-      );
-      var totalSum = 0.0;
+    return List.generate(
+      7,
+      (index) {
+        //Keep subtracting a day from current date in order to get previous week
+        final weekDay = DateTime.now().subtract(
+          Duration(days: index),
+        );
+        var totalSum = 0.0;
 
-      //Loop to get the total transaction amount for a particular day
-      for (var tx in recentTransaction) {
-        if (tx.date.day == weekDay.day &&
-            tx.date.month == weekDay.month &&
-            tx.date.year == weekDay.year) {
-          totalSum += tx.amount;
+        //Loop to get the total transaction amount for a particular day
+        for (var tx in recentTransaction) {
+          if (tx.date.day == weekDay.day &&
+              tx.date.month == weekDay.month &&
+              tx.date.year == weekDay.year) {
+            totalSum += tx.amount;
+          }
         }
-      }
-      //Returning a map that conatins the day and amount
-      return {
-        //Dateformat from intl package. DateFormat.E gives the day abbreviated (e.g. Tue)
-        'day': DateFormat.E().format(weekDay).substring(0, 1),
-        'amount': totalSum,
-      };
-    });
+        //Returning a map that conatins the day and amount
+        return {
+          //Dateformat from intl package. DateFormat.E gives the day abbreviated (e.g. Tue)
+          'day': DateFormat.E().format(weekDay).substring(0, 1),
+          'amount': totalSum,
+        };
+      },
+      //Reveresed used so chart bars display oldest to newest, from left to right
+    ).reversed.toList();
   }
 
   double get totalSpending {
@@ -49,17 +53,17 @@ class Chart extends StatelessWidget {
     return Card(
       elevation: 6,
       margin: EdgeInsets.all(20),
-      child: Container(
+      child: Padding(
         padding: EdgeInsets.all(10),
         child: Row(
-          mainAxisAlignment:  MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           //Create a map of widgets based on the generated list
           children: groupedTransacationValues.map(
             (data) {
               //Flexible used to stop large lable of a bar effecting the whole row
               return Flexible(
                 fit: FlexFit.tight,
-                            child: ChartBar(
+                child: ChartBar(
                   data['day'],
                   data['amount'],
                   totalSpending == 0.0

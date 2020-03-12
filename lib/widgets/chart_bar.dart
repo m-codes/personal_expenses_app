@@ -12,9 +12,13 @@ class ChartBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        //toStringAsFixed(0) to remove all decimal places
-        //FitedBox makes the label shrink to fit size, as opposed to starting new line
-        FittedBox(child: Text('\€${spendingAmount.toStringAsFixed(0)}')),
+        //Container added to keep chart form if large numbers entered
+        Container(
+            height: 20,
+            //toStringAsFixed(0) to remove all decimal places
+            //FitedBox makes the label shrink to fit size, as opposed to starting new line
+            child: FittedBox(
+                child: Text('\€${spendingAmount.toStringAsFixed(0)}'))),
         SizedBox(
           height: 4,
         ),

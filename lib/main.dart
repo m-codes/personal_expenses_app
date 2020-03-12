@@ -18,12 +18,14 @@ class MyApp extends StatelessWidget {
           accentColor: Colors.amber,
           fontFamily: 'QuickSand',
           textTheme: ThemeData.light().textTheme.copyWith(
-                title: TextStyle(
-                  fontFamily: 'OpensSans',
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+              title: TextStyle(
+                fontFamily: 'OpensSans',
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
               ),
+              button: TextStyle(
+                color: Colors.white,
+              )),
           appBarTheme: AppBarTheme(
             //Assigned a new test theme to appbar. It is based on default text theme (ThemeData.light().textTheme.)
             //copy with allows overwritting of certain values styles
@@ -58,6 +60,30 @@ class _HomePageState extends State<HomePage> {
       amount: 45.00,
       date: DateTime.now(),
     ),
+    Transaction(
+      id: 't3',
+      title: 'Shoes',
+      amount: 55.00,
+      date: DateTime.now(),
+    ),
+    Transaction(
+      id: 't4',
+      title: 'Netflix',
+      amount: 10.00,
+      date: DateTime.now(),
+    ),
+    Transaction(
+      id: 't5',
+      title: 'Spotify',
+      amount: 5.00,
+      date: DateTime.now(),
+    ),
+    Transaction(
+      id: 't6',
+      title: 'Takeaway',
+      amount: 25.00,
+      date: DateTime.now(),
+    ),
   ];
 
   List<Transaction> get _recentTransactions {
@@ -71,11 +97,12 @@ class _HomePageState extends State<HomePage> {
     }).toList();
   }
 
-  void _addNewTransaction(String tranTitle, double tranAmount) {
+  void _addNewTransaction(
+      String tranTitle, double tranAmount, DateTime chosenDate) {
     final newTran = Transaction(
       title: tranTitle,
       amount: tranAmount,
-      date: DateTime.now(),
+      date: chosenDate,
       id: DateTime.now().toString(), //Temporary ID
     );
 
@@ -103,6 +130,12 @@ class _HomePageState extends State<HomePage> {
         });
   }
 
+  void _deleteTransaction(String id) {
+    setState(() {
+      _userTransactions.removeWhere((tx) => tx.id == id);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -121,14 +154,8 @@ class _HomePageState extends State<HomePage> {
           //mainAxisAlignment: MainAxisAlignment.start, it is the default
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            //Wrapped Card widget in container in order to change size
-            //as a Card widgets size is based on the Text size
-            Container(
-              width: double.infinity,
-              //Card: Pre-styled container widget. Using to hold chart
-              child: Chart(_recentTransactions),
-            ),
-            TransactionList(_userTransactions),
+            Chart(_recentTransactions),
+            TransactionList(_userTransactions, _deleteTransaction),
           ],
         ),
       ),
