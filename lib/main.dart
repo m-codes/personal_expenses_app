@@ -78,12 +78,6 @@ class _HomePageState extends State<HomePage> {
       amount: 5.00,
       date: DateTime.now(),
     ),
-    Transaction(
-      id: 't6',
-      title: 'Takeaway',
-      amount: 25.00,
-      date: DateTime.now(),
-    ),
   ];
 
   List<Transaction> get _recentTransactions {
@@ -138,24 +132,40 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    //Stored appBar in a variable as it contains info about the appBar height
+    //Which can be used to deduct from other widgets below
+    final appBar = AppBar(
+      title: Text('Personal Expenses'),
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.add),
+          //called as an anonomous function in order to pass context
+          onPressed: () => _startAddNewTransaction(context),
+        )
+      ],
+    );
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Personal Expenses'),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.add),
-            //called as an anonomous function in order to pass context
-            onPressed: () => _startAddNewTransaction(context),
-          )
-        ],
-      ),
+      appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
           //mainAxisAlignment: MainAxisAlignment.start, it is the default
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Chart(_recentTransactions),
-            TransactionList(_userTransactions, _deleteTransaction),
+            Container(
+              //Take 40% of available screen
+              //- padding removes the automatic padding flutter provides
+              height: (MediaQuery.of(context).size.height -
+                      appBar.preferredSize.height - MediaQuery.of(context).padding.top) *
+                  0.3,
+              child: Chart(_recentTransactions),
+            ),
+            Container(
+              height: (MediaQuery.of(context).size.height -
+                      appBar.preferredSize.height -MediaQuery.of(context).padding.top) *
+                  0.7,
+              child: TransactionList(_userTransactions, _deleteTransaction),
+            ),
+            
           ],
         ),
       ),
